@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -88,6 +89,21 @@ public class GlobalExceptionHandler {
                 BAD_REQUEST
         );
     }
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<RsData<Void>> handle(MissingRequestHeaderException ex) {
+        return new ResponseEntity<>(
+                new RsData<>(
+                        "400-1",
+                        "%s-%s-%s".formatted(
+                                ex.getHeaderName(),
+                                "NotBlank",
+                                ex.getLocalizedMessage()
+                        )
+                ),
+                BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(ServiceException.class)
     public RsData<Void> handle(ServiceException ex, HttpServletResponse response) {
         RsData<Void> rsData = ex.getRsData();
