@@ -19,7 +19,7 @@ public class MemberService {
 
     public Member join(String username, String password, String nickname) {
         findByUsername(username).ifPresent(_ -> {
-            throw  new ServiceException("409-1","이미 존재하는 아이디입니다.");
+            throw new ServiceException("409-1","이미 존재하는 아이디입니다.");
         });
 
         Member member = new Member(username, password, nickname);
