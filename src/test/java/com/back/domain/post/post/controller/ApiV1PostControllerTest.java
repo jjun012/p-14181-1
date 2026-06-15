@@ -31,6 +31,8 @@ public class ApiV1PostControllerTest {
     private MockMvc mvc;
     @Autowired
     private PostService postService;
+    @Autowired
+    private MemberService memberService;
 
 
     @Test
@@ -154,10 +156,15 @@ public class ApiV1PostControllerTest {
     @DisplayName("글 수정")
     void t2() throws Exception {
         int id = 1;
+        Post post = postService.findById(id).get();
+        Member actor = post.getAuthor();
+        String actorApiKey = actor.getApiKey();
+
 
         ResultActions resultActions = mvc
                 .perform(
                         put("/api/v1/posts/" + id)
+                                .header("Authorization", "Bearer " + actorApiKey)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
@@ -271,6 +278,4 @@ public class ApiV1PostControllerTest {
                     .andExpect(jsonPath("$[%d].content".formatted(i)).value(post.getContent()));
         }
     }
-    @Autowired
-    private MemberService memberService;
 }
