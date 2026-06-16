@@ -99,8 +99,6 @@ public class ApiV1PostCommentController {
         Post post = postService.findById(postId).get();
         PostComment postComment = post.findCommentById(id).get();
 
-        post.checkActorCanModify(actor);
-
         postComment.checkActorCanModify(actor);
         return new RsData<>(
                 "200-1",
