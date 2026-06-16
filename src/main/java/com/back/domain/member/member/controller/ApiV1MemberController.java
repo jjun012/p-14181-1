@@ -4,14 +4,11 @@ package com.back.domain.member.member.controller;
 import com.back.domain.member.member.dto.MemberDto;
 import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
-import com.back.domain.post.post.dto.PostDto;
 import com.back.global.exception.ServiceException;
 import com.back.global.rq.Rq;
 import com.back.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -73,16 +70,14 @@ public class ApiV1MemberController {
     @PostMapping("/login")
     @Transactional
     @Operation(summary = "로그인")
-    public RsData<MemberLoginResBody> login(@Valid @RequestBody MemberLoginReqBody reqBody,
-                                            HttpServletResponse response) {
+    public RsData<MemberLoginResBody> login(@Valid @RequestBody MemberLoginReqBody reqBody) {
         Member member = memberService.findByUsername(reqBody.username())
                 .orElseThrow(()-> new ServiceException("401-1","존재하지 않는 아이디입니다."));
 
         if (!member.getPassword().equals(reqBody.password()))
             throw new ServiceException("401-2", "비밀번호가 일치하지 않습니다.");
 
-        response.addCookie(new Cookie("apiKey", member.getApiKey()));
-
+        rq.setCookie("apiKey", member.getApiKey());
 
         return new RsData<>(
                 "200-1",
