@@ -40,7 +40,7 @@ public class Rq {
 
         return member;
     }
-    
+
     private String getHeader(String name, String defaultValue) {
         return Optional
                 .ofNullable(req.getHeader(name))
@@ -66,6 +66,14 @@ public class Rq {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+
+        resp.addCookie(cookie);
+    }
+    public void deleteCookie(String name) {
+        Cookie cookie = new Cookie(name, "");
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
 
         resp.addCookie(cookie);
     }
