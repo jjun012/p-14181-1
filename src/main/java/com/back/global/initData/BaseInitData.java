@@ -4,6 +4,7 @@ import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
+import com.back.global.app.AppConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -33,6 +34,8 @@ public class BaseInitData {
     @Transactional
     public void work1() {
         if (memberService.count() > 0) return;
+
+        AppConfig.isDev();
 
         Member memberSystem = memberService.join("system", "1234", "시스템");
         memberSystem.modifyApiKey(memberSystem.getUsername());
