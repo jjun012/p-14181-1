@@ -17,6 +17,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         System.out.println("CustomAuthenticationFilter: Processing request for " + request.getRequestURI());
 
-        //filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }
