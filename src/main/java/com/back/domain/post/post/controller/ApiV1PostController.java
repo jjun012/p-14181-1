@@ -86,7 +86,7 @@ public class ApiV1PostController {
     @Transactional
     @Operation(summary = "작성")
     public RsData<PostDto> write(@RequestBody @Valid PostWriteReqBody reqBody){
-        Member actor = rq.getActor();
+        Member actor = memberService.findById(rq.getActor().getId()).get();
         Post post = postService.write(actor, reqBody.title, reqBody.content);
 
 
@@ -114,7 +114,7 @@ public class ApiV1PostController {
     public RsData<Void> modify(
             @PathVariable int id,
             @RequestBody @Valid PostModifyReqBody reqBody) {
-        Member actor = memberService.findById(rq.getActor().getId()).get();
+        Member actor = rq.getActor();
         Post post = postService.findById(id).get();
         post.checkActorCanModify(actor);
         postService.modify(post, reqBody.title, reqBody.content);
