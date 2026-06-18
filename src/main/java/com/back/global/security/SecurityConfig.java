@@ -16,11 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final CustomAuthenticationFilter customAuthenticationFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    @Bean
+   @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) {
         http
                 .authorizeHttpRequests(
