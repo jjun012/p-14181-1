@@ -114,7 +114,7 @@ public class ApiV1PostController {
     public RsData<Void> modify(
             @PathVariable int id,
             @RequestBody @Valid PostModifyReqBody reqBody) {
-        Member actor = rq.getActor();
+        Member actor = memberService.findById(rq.getActor().getId()).get();
         Post post = postService.findById(id).get();
         post.checkActorCanModify(actor);
         postService.modify(post, reqBody.title, reqBody.content);
