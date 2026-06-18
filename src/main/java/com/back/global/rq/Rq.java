@@ -23,6 +23,7 @@ public class Rq {
     public Member getActor() {
         String apiKey;
         String accessToken;
+
         String headerAuthorization = getHeader("Authorization", "");
 
         if (!headerAuthorization.isBlank()) {
@@ -37,8 +38,9 @@ public class Rq {
             apiKey = getCookieValue("apiKey", "");
             accessToken = getCookieValue("accessToken", "");
         }
+
         if (apiKey.isBlank())
-            throw new ServiceException("401-1","로그인 후 이용해주세요.");
+            throw new ServiceException("401-1", "로그인 후 이용해주세요.");
 
         Member member = null;
         boolean isAccessTokenExists = !accessToken.isBlank();
@@ -50,8 +52,10 @@ public class Rq {
             if (payload != null) {
                 int id = (int) payload.get("id");
                 String username = (String) payload.get("username");
+                String name = (String) payload.get("name");
 
-                member = new Member(id, username);
+                member = new Member(id, username, name);
+
                 isAccessTokenValid = true;
             }
         }
@@ -61,12 +65,14 @@ public class Rq {
                     .findByApiKey(apiKey)
                     .orElseThrow(() -> new ServiceException("401-3", "API 키가 유효하지 않습니다."));
         }
+
         if (isAccessTokenExists && !isAccessTokenValid) {
             String actorAccessToken = memberService.genAccessToken(member);
 
             setCookie("accessToken", actorAccessToken);
             setHeader("Authorization", actorAccessToken);
         }
+
         return member;
     }
 
@@ -76,6 +82,7 @@ public class Rq {
                 .filter(headerValue -> !headerValue.isBlank())
                 .orElse(defaultValue);
     }
+
     private void setHeader(String name, String value) {
         if (value == null) value = "";
 
@@ -87,32 +94,29 @@ public class Rq {
     }
 
     private String getCookieValue(String name, String defaultValue) {
-        return Optional
-                .ofNullable(req.getCookies())
-                .flatMap(
-                        cookies ->
-                                Arrays.stream(cookies)
-                                        .filter(cookie -> cookie.getName().equals(name))
-                                        .map(Cookie::getValue)
-                                        .filter(value -> !value.isBlank())
-                                        .findFirst()
-                )
+        return Arrays.stream(Optional.ofNullable(req.getCookies()).orElse(new Cookie[0]))
+                .filter(cookie -> name.equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .filter(value -> value != null && !value.isBlank())
+                .findFirst()
                 .orElse(defaultValue);
     }
 
     public void setCookie(String name, String value) {
-        if(value==null) value="";
+        if (value == null) value = "";
 
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
-        if(value.isBlank()){
+        // 값이 없다면 해당 쿠키변수를 삭제하라는 뜻
+        if (value.isBlank()) {
             cookie.setMaxAge(0);
         }
 
         resp.addCookie(cookie);
     }
+
     public void deleteCookie(String name) {
         setCookie(name, null);
     }
