@@ -86,7 +86,7 @@ public class ApiV1PostController {
     @Transactional
     @Operation(summary = "작성")
     public RsData<PostDto> write(@RequestBody @Valid PostWriteReqBody reqBody){
-        Member actor = memberService.findById(rq.getActor().getId()).get();
+        Member actor = rq.getActor();
         Post post = postService.write(actor, reqBody.title, reqBody.content);
 
 
