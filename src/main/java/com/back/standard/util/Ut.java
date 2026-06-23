@@ -1,5 +1,6 @@
 package com.back.standard.util;
 
+import com.back.global.app.AppConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ClaimsBuilder;
 import io.jsonwebtoken.Jwts;
@@ -71,15 +72,13 @@ public class Ut {
     }
 
     public static class json {
-        private static final ObjectMapper objectMapper = new ObjectMapper();
-
         public static String toString(Object object) {
             return toString(object, null);
         }
 
         public static String toString(Object object, String defaultValue) {
             try {
-                return objectMapper.writeValueAsString(object);
+                return AppConfig.getObjectMapper().writeValueAsString(object);
             } catch (Exception e) {
                 return defaultValue;
             }
