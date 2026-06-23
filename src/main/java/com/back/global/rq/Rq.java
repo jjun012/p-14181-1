@@ -65,10 +65,12 @@ public class Rq {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
-        // 값이 없다면 해당 쿠키변수를 삭제하라는 뜻
-        if (value.isBlank()) {
-            cookie.setMaxAge(0);
-        }
+        cookie.setDomain("localhost");
+        cookie.setSecure(true);
+        cookie.setAttribute("SameSite", "Strict");
+
+        if (value.isBlank()) cookie.setMaxAge(0);
+        else cookie.setMaxAge(60 * 60 * 24 * 365);
 
         resp.addCookie(cookie);
     }
