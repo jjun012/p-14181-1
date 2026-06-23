@@ -70,15 +70,16 @@ public class Ut {
             }
         }
     }
-
     public static class json {
+        public static ObjectMapper objectMapper;
+
         public static String toString(Object object) {
             return toString(object, null);
         }
 
         public static String toString(Object object, String defaultValue) {
             try {
-                return AppConfig.getObjectMapper().writeValueAsString(object);
+                return objectMapper.writeValueAsString(object);
             } catch (Exception e) {
                 return defaultValue;
             }
